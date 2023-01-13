@@ -5,10 +5,18 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useDispatch } from "react-redux";
+import { setUserName } from "../Store/UserNameSlice";
 
 const FormDialog = () => {
   const [name, setName] = useState("");
   const [open, setOpen] = useState(true);
+  const dispatch = useDispatch();
+
+  const handleGetIn = () => {
+    setOpen(false);
+    dispatch(setUserName(name));
+  };
 
   return (
     <Dialog open={open}>
@@ -26,7 +34,7 @@ const FormDialog = () => {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => setOpen(false)} disabled={!Boolean(name)}>
+        <Button onClick={handleGetIn} disabled={!Boolean(name)}>
           GET IN
         </Button>
       </DialogActions>
