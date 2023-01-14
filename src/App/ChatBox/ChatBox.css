@@ -51,6 +51,7 @@
   background-color: purple;
   width: 250px;
   display: inline-block;
+  color: rgb(209, 197, 197);
 }
 
 .message-avatar {
