@@ -6,7 +6,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useDispatch } from "react-redux";
-import { setUserName } from "../Store/UserNameSlice";
+import { setUserName } from "../store/userNameSlice";
 
 const FormDialog = () => {
   const [name, setName] = useState("");

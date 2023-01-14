@@ -1,14 +1,12 @@
 import "./ChatBox.css";
+import InputBox from "./InputBox";
+import MessageBox from "./MessageBox";
 
 const ChatBox = () => {
   return (
     <div id="chat-box">
-      <div id="input-box">
-        <div id="message-send-box">
-          <input type="text" placeholder="Enter your message" />
-          <button>Send</button>
-        </div>
-      </div>
+      <MessageBox />
+      <InputBox />
     </div>
   );
 };
