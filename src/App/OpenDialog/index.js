@@ -31,10 +31,15 @@ const FormDialog = () => {
           variant="standard"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          id="name-input"
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleGetIn} disabled={!Boolean(name)}>
+        <Button
+          onClick={handleGetIn}
+          disabled={!Boolean(name)}
+          id="get-in-button"
+        >
           GET IN
         </Button>
       </DialogActions>
