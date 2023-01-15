@@ -1,5 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 import insertMessagesToMessageBox, {
   insertMessageToMessageBox,
 } from "./insertMessagesToMessageBox";
@@ -37,19 +39,24 @@ const MessageBox = () => {
     // And prepend new messages to messageBox.
     messageBox.onscroll = () => {
       if (messageBox.scrollTop === 0 && savedMessages.length) {
-        const messageBoxPreHeight = messageBox.scrollHeight;
-        const prependToTopOlderMessages = savedMessages.splice(
-          Math.max(0, savedMessages.length - limit)
-        );
-        insertMessagesToMessageBox(
-          prependToTopOlderMessages,
-          "prepend",
-          userName,
-          messageBox
-        );
-        // Scroll back down to the previous height for user to still seeing the current
-        // message instead of seeing the latest new loaded message on top of messageBox.
-        messageBox.scrollTo(0, messageBox.scrollHeight - messageBoxPreHeight);
+        const spinner = document.getElementById("loading-messages-spinner");
+        spinner.style.display = "block";
+        setTimeout(() => {
+          const messageBoxPreHeight = messageBox.scrollHeight;
+          const prependToTopOlderMessages = savedMessages.splice(
+            Math.max(0, savedMessages.length - limit)
+          );
+          insertMessagesToMessageBox(
+            prependToTopOlderMessages,
+            "prepend",
+            userName,
+            messageBox
+          );
+          // Scroll back down to the previous height for user to still seeing the current
+          // message instead of seeing the latest new loaded message on top of messageBox.
+          messageBox.scrollTo(0, messageBox.scrollHeight - messageBoxPreHeight);
+          spinner.style.display = "none";
+        }, 1000);
       }
     };
   }, [savedMessages, userName, limit, messageBoxId]);
@@ -80,7 +87,13 @@ const MessageBox = () => {
     }, 100);
   }, [lastMessageSavedAtString, userName, messageBoxId, messagesString]);
 
-  return <div id={messageBoxId}></div>;
+  return (
+    <div id={messageBoxId}>
+      <Box id="loading-messages-spinner">
+        <CircularProgress />
+      </Box>
+    </div>
+  );
 };
 
 export default MessageBox;

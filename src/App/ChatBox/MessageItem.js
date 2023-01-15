@@ -3,7 +3,7 @@ const MessageItemForCurUser = ({ message }) => (
     <div className="message-item message-item-right">
       <div>{message.value}</div>
     </div>
-    <div class="triangle-right"></div>
+    <div className="triangle-right"></div>
     <div
       className="message-avatar"
       style={{ marginRight: "7px", backgroundColor: "#e6e6e6" }}
@@ -21,7 +21,7 @@ const MessageItemForOtherUser = ({ message }) => (
     >
       <span>User</span>
     </div>
-    <div class="triangle-left"></div>
+    <div className="triangle-left"></div>
     <div className="message-item message-item-left">
       <div>{message.name}:</div>
       <div>{message.value}</div>
