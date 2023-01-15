@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export const userNameSlice = createSlice({
-  name: "userName",
+export const userSlice = createSlice({
+  name: "user",
   initialState: {
     name: "",
   },
@@ -13,6 +13,6 @@ export const userNameSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setUserName } = userNameSlice.actions;
+export const { setUserName } = userSlice.actions;
 
-export default userNameSlice.reducer;
+export default userSlice.reducer;

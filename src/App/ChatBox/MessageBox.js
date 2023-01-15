@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import insertMessagesToMessageBox, {
   insertMessageToMessageBox,
@@ -11,15 +11,20 @@ import insertMessagesToMessageBox, {
 // Let javascript prepend method for this problem is much much better and simpler
 // than with react.
 const MessageBox = () => {
-  const userName = useSelector((state) => state.userName.name);
+  const userName = useSelector((state) => state.user.name);
   const messagesString = process.env.REACT_APP_LOCAL_STORAGE_MESSAGES;
-  const savedMessages = JSON.parse(localStorage.getItem(messagesString));
+  // Expensive calculation, useMemo here just in case this component re-render
+  // So all useEffect(), JSON.parse() will not be re-runned again.
+  const savedMessages = useMemo(
+    () => JSON.parse(localStorage.getItem(messagesString)),
+    [messagesString]
+  );
   const limit = process.env.REACT_APP_SHOWED_MESSAGES_LIMIT;
   const messageBoxId = process.env.REACT_APP_MESSAGE_BOX_ID;
   const lastMessageSavedAtString = process.env.REACT_APP_LAST_MESSAGE_SAVED_AT;
 
-  // Show the latest 25 messages when the dom finished loading.
   useEffect(() => {
+    // Show the latest 25 messages when the dom finished loading.
     const messageBox = document.getElementById(messageBoxId);
     const showMessages = savedMessages
       ? savedMessages.splice(Math.max(0, savedMessages.length - limit))
@@ -27,6 +32,26 @@ const MessageBox = () => {
     insertMessagesToMessageBox(showMessages, "append", userName, messageBox);
     // Scroll to the bottom at the end of the loop
     messageBox.scrollTo(0, messageBox.scrollHeight);
+
+    // When the user scroll to the top load older messages.
+    // And prepend new messages to messageBox.
+    messageBox.onscroll = () => {
+      if (messageBox.scrollTop === 0 && savedMessages.length) {
+        const messageBoxPreHeight = messageBox.scrollHeight;
+        const prependToTopOlderMessages = savedMessages.splice(
+          Math.max(0, savedMessages.length - limit)
+        );
+        insertMessagesToMessageBox(
+          prependToTopOlderMessages,
+          "prepend",
+          userName,
+          messageBox
+        );
+        // Scroll back down to the previous height for user to still seeing the current
+        // message instead of seeing the latest new loaded message on top of messageBox.
+        messageBox.scrollTo(0, messageBox.scrollHeight - messageBoxPreHeight);
+      }
+    };
   }, [savedMessages, userName, limit, messageBoxId]);
 
   // Frequently check the localStorage 'lastMessageSavedAt' to detect if new
@@ -54,29 +79,6 @@ const MessageBox = () => {
       }
     }, 100);
   }, [lastMessageSavedAtString, userName, messageBoxId, messagesString]);
-
-  // When the user scroll to the top load older messages.
-  // And prepend new messages to messageBox.
-  useEffect(() => {
-    const messageBox = document.getElementById(messageBoxId);
-    messageBox.onscroll = () => {
-      if (messageBox.scrollTop === 0 && savedMessages.length) {
-        const messageBoxPreHeight = messageBox.scrollHeight;
-        const prependToTopOlderMessages = savedMessages.splice(
-          Math.max(0, savedMessages.length - limit)
-        );
-        insertMessagesToMessageBox(
-          prependToTopOlderMessages,
-          "prepend",
-          userName,
-          messageBox
-        );
-        // Scroll back down to the previous height for user to still seeing the current
-        // message instead of seeing the latest new loaded message on top of messageBox.
-        messageBox.scrollTo(0, messageBox.scrollHeight - messageBoxPreHeight);
-      }
-    };
-  }, [limit, messageBoxId, savedMessages, userName]);
 
   return <div id={messageBoxId}></div>;
 };

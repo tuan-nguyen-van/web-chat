@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { insertMessageToMessageBox } from "./insertMessagesToMessageBox";
 
 const InputBox = () => {
-  const userName = useSelector((state) => state.userName.name);
+  const userName = useSelector((state) => state.user.name);
   const [message, setMessage] = useState("");
   const messagesString = process.env.REACT_APP_LOCAL_STORAGE_MESSAGES;
 
@@ -48,6 +48,7 @@ const InputBox = () => {
           placeholder="Enter your message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          id="message-input"
         />
         <button onClick={handleSend}>Send</button>
       </div>
