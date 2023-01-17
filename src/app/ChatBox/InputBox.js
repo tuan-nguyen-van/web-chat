@@ -37,6 +37,7 @@ const InputBox = () => {
       // scroll to the bottom of the message box.
       messageBox.scrollTo(0, messageBox.scrollHeight);
       setMessage("");
+      document.getElementById("message-input").focus();
     }
   };
 
@@ -47,6 +48,11 @@ const InputBox = () => {
           type="text"
           placeholder="Enter your message"
           value={message}
+          onKeyUp={(e) => {
+            if (e.key === "Enter") {
+              handleSend();
+            }
+          }}
           onChange={(e) => setMessage(e.target.value)}
           id="message-input"
         />
